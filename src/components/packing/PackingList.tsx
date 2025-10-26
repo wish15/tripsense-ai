@@ -157,7 +157,7 @@ export default function PackingList({ itinerary }: PackingListProps) {
     return (
       <div className="bg-white rounded-2xl shadow-sm p-12 text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p className="text-gray-600">Generating your smart packing list...</p>
+        <p style={{ color: '#475569' }}>Generating your smart packing list...</p>
       </div>
     );
   }
@@ -167,7 +167,7 @@ export default function PackingList({ itinerary }: PackingListProps) {
       {/* Progress Card */}
       <div className="bg-white rounded-2xl shadow-sm p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold flex items-center gap-2">
+          <h2 className="text-xl font-bold flex items-center gap-2" style={{ color: '#0f172a' }}>
             <Package className="h-5 w-5 text-blue-600" />
             Smart Packing List
           </h2>
@@ -175,7 +175,7 @@ export default function PackingList({ itinerary }: PackingListProps) {
             <div className="text-2xl font-bold text-blue-600">
               {checkedItems}/{totalItems}
             </div>
-            <div className="text-xs text-gray-500">items packed</div>
+            <div className="text-xs" style={{ color: '#94a3b8' }}>items packed</div>
           </div>
         </div>
 
@@ -186,7 +186,7 @@ export default function PackingList({ itinerary }: PackingListProps) {
             style={{ width: `${progress}%` }}
           />
         </div>
-        <p className="text-sm text-gray-600 mt-2">
+        <p className="text-sm mt-2" style={{ color: '#475569' }}>
           {progress === 100
             ? "🎉 All packed and ready to go!"
             : `${Math.round(progress)}% complete - keep going!`}
@@ -198,8 +198,8 @@ export default function PackingList({ itinerary }: PackingListProps) {
         <div className="flex items-start gap-3">
           <Sparkles className="h-6 w-6 text-purple-600 mt-0.5" />
           <div>
-            <h3 className="font-semibold text-purple-900 mb-2">AI-Personalized Packing List</h3>
-            <p className="text-sm text-purple-800">
+            <h3 className="font-semibold mb-2" style={{ color: '#581c87' }}>AI-Personalized Packing List</h3>
+            <p className="text-sm" style={{ color: '#6b21a8' }}>
               This list is customized for your {itinerary.days.length}-day trip to {itinerary.destination}, 
               based on your planned activities, weather forecast, and travel style.
             </p>
@@ -211,7 +211,7 @@ export default function PackingList({ itinerary }: PackingListProps) {
       {packingList.map((category, catIndex) => (
         <div key={catIndex} className="bg-white rounded-2xl shadow-sm p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold">{category.name}</h3>
+            <h3 className="text-lg font-bold" style={{ color: '#0f172a' }}>{category.name}</h3>
             {category.essential && (
               <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
                 Essential
@@ -231,10 +231,10 @@ export default function PackingList({ itinerary }: PackingListProps) {
                   <Circle className="h-5 w-5 text-gray-400 flex-shrink-0 mt-0.5" />
                 )}
                 <div className="flex-1">
-                  <div className={`font-medium ${item.checked ? 'line-through text-gray-400' : 'text-gray-900'}`}>
+                  <div className={`font-medium ${item.checked ? 'line-through text-gray-400' : ''}`} style={item.checked ? {} : { color: '#0f172a' }}>
                     {item.name}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">{item.reason}</div>
+                  <div className="text-xs mt-1" style={{ color: '#94a3b8' }}>{item.reason}</div>
                 </div>
               </div>
             ))}
@@ -244,8 +244,8 @@ export default function PackingList({ itinerary }: PackingListProps) {
 
       {/* Pro Tips */}
       <div className="bg-yellow-50 rounded-2xl p-6 border border-yellow-200">
-        <h3 className="font-semibold text-yellow-900 mb-3">✨ Packing Pro Tips</h3>
-        <ul className="text-sm text-yellow-800 space-y-2">
+        <h3 className="font-semibold mb-3" style={{ color: '#78350f' }}>✨ Packing Pro Tips</h3>
+        <ul className="text-sm space-y-2" style={{ color: '#92400e' }}>
           <li>• Roll clothes instead of folding to save space</li>
           <li>• Pack a change of clothes in your carry-on</li>
           <li>• Use packing cubes to stay organized</li>

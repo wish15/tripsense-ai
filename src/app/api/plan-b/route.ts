@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { openai, MODELS } from '@/lib/ai/openai';
+import { generateJSONWithGemini } from '@/lib/ai/google';
 import { generatePlanBPrompt } from '@/lib/ai/prompts';
 
 export async function POST(request: NextRequest) {
@@ -15,28 +15,7 @@ export async function POST(request: NextRequest) {
 
     const prompt = generatePlanBPrompt(activity, reason);
 
-    const completion = await openai.chat.completions.create({
-      model: MODELS.GPT4_MINI,
-      messages: [
-        {
-          role: 'system',
-          content: 'You are a travel planning expert who provides backup alternatives. Always respond with valid JSON only.',
-        },
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-      temperature: 0.8,
-      response_format: { type: 'json_object' },
-    });
-
-    const responseContent = completion.choices[0].message.content;
-    if (!responseContent) {
-      throw new Error('No response from AI');
-    }
-
-    const planBResult = JSON.parse(responseContent);
+    const planBResult = await generateJSONWithGemini(prompt);
 
     return NextResponse.json({
       success: true,

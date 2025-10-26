@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { openai, MODELS } from '@/lib/ai/openai';
+import { generateJSONWithGemini } from '@/lib/ai/google';
 import { generateItineraryPrompt } from '@/lib/ai/prompts';
 import { TravelPreferences } from '@/types';
 
@@ -15,31 +15,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate itinerary using OpenAI
+    // Generate itinerary using Google Gemini AI
     const prompt = generateItineraryPrompt(preferences);
 
-    const completion = await openai.chat.completions.create({
-      model: MODELS.GPT4_MINI,
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert travel planner. Always respond with valid JSON only, no additional text.',
-        },
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-      temperature: 0.7,
-      response_format: { type: 'json_object' },
-    });
-
-    const responseContent = completion.choices[0].message.content;
-    if (!responseContent) {
-      throw new Error('No response from AI');
-    }
-
-    const aiResponse = JSON.parse(responseContent);
+    const aiResponse = await generateJSONWithGemini(prompt);
 
     // Enhance the response with additional data
     const itinerary = {

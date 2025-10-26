@@ -82,12 +82,13 @@ export default function ItineraryPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <MapPin className="h-6 w-6 text-blue-600" />
-              <h1 className="text-2xl font-bold">{itinerary.destination}</h1>
+              <h1 className="text-2xl font-bold" style={{ color: '#0f172a' }}>{itinerary.destination}</h1>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={handleShare}
                 className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                style={{ color: '#0f172a' }}
               >
                 <Share2 className="h-4 w-4" />
                 Share
@@ -147,13 +148,13 @@ export default function ItineraryPage() {
             <div className="bg-white rounded-2xl p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
                 <Sparkles className="h-5 w-5 text-purple-600" />
-                <h2 className="text-xl font-bold">Trip Highlights</h2>
+                <h2 className="text-xl font-bold" style={{ color: '#0f172a' }}>Trip Highlights</h2>
               </div>
               <div className="grid md:grid-cols-3 gap-3">
                 {itinerary.highlights.map((highlight, index) => (
                   <div key={index} className="flex items-start gap-2 p-3 bg-purple-50 rounded-lg">
                     <TrendingUp className="h-5 w-5 text-purple-600 mt-0.5" />
-                    <p className="text-sm text-gray-700">{highlight}</p>
+                    <p className="text-sm" style={{ color: '#1e293b' }}>{highlight}</p>
                   </div>
                 ))}
               </div>
@@ -187,8 +188,8 @@ function StatCard({ icon, label, value, color = "text-blue-600" }: { icon: React
     <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
       <div className={color}>{icon}</div>
       <div>
-        <p className="text-xs text-gray-600">{label}</p>
-        <p className="font-bold">{value}</p>
+        <p className="text-xs" style={{ color: '#64748b' }}>{label}</p>
+        <p className="font-bold" style={{ color: '#0f172a' }}>{value}</p>
       </div>
     </div>
   );

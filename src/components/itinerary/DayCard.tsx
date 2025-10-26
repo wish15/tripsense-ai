@@ -32,8 +32,8 @@ export default function DayCard({ day, currency }: DayCardProps) {
               {day.day}
             </div>
             <div>
-              <h3 className="text-xl font-bold">{day.theme || `Day ${day.day}`}</h3>
-              <p className="text-gray-600 text-sm">{format(new Date(day.date), 'EEEE, MMMM d, yyyy')}</p>
+              <h3 className="text-xl font-bold" style={{ color: '#0f172a' }}>{day.theme || `Day ${day.day}`}</h3>
+              <p className="text-sm" style={{ color: '#64748b' }}>{format(new Date(day.date), 'EEEE, MMMM d, yyyy')}</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -90,14 +90,14 @@ function ActivityCard({ activity, currency }: { activity: Activity; currency: st
         <div className="flex-1">
           <div className="flex items-start justify-between mb-2">
             <div className="flex-1">
-              <h4 className="text-lg font-bold mb-1">{activity.name}</h4>
-              <p className="text-gray-600 text-sm mb-3">{activity.description}</p>
+              <h4 className="text-lg font-bold mb-1" style={{ color: '#0f172a' }}>{activity.name}</h4>
+              <p className="text-sm mb-3" style={{ color: '#475569' }}>{activity.description}</p>
             </div>
             <div className="text-right ml-4">
               <div className="text-lg font-bold text-green-600">
                 {currency}{activity.cost}
               </div>
-              <div className="text-xs text-gray-500">per person</div>
+              <div className="text-xs" style={{ color: '#94a3b8' }}>per person</div>
             </div>
           </div>
 
@@ -119,7 +119,7 @@ function ActivityCard({ activity, currency }: { activity: Activity; currency: st
           </div>
 
           {/* Location */}
-          <div className="flex items-start gap-2 text-sm text-gray-600 mb-3">
+          <div className="flex items-start gap-2 text-sm mb-3" style={{ color: '#475569' }}>
             <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
             <span>{activity.location.address}</span>
           </div>
@@ -130,8 +130,8 @@ function ActivityCard({ activity, currency }: { activity: Activity; currency: st
               <div className="flex items-start gap-2">
                 <Lightbulb className="h-4 w-4 text-yellow-600 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="text-xs font-semibold text-yellow-800 mb-1">Insider Tips:</p>
-                  <ul className="text-xs text-yellow-800 space-y-1">
+                  <p className="text-xs font-semibold mb-1" style={{ color: '#92400e' }}>Insider Tips:</p>
+                  <ul className="text-xs space-y-1" style={{ color: '#92400e' }}>
                     {activity.tips.map((tip, i) => (
                       <li key={i}>• {tip}</li>
                     ))}
@@ -153,7 +153,7 @@ function ActivityCard({ activity, currency }: { activity: Activity; currency: st
           {/* Plan B Options (Placeholder) */}
           {showPlanB && (
             <div className="mt-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm" style={{ color: '#334155' }}>
                 💡 If plans change, try nearby alternatives like museums, cafes, or indoor activities. 
                 Full Plan B suggestions available on upgrade!
               </p>

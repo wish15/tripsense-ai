@@ -4,14 +4,18 @@ import { format } from 'date-fns';
 export function generateItineraryPrompt(preferences: TravelPreferences): string {
   const { destination, startDate, endDate, budget, travelers, vibe, pace } = preferences;
   
-  const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+  // Convert string dates to Date objects if needed
+  const start = typeof startDate === 'string' ? new Date(startDate) : startDate;
+  const end = typeof endDate === 'string' ? new Date(endDate) : endDate;
+  
+  const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
   const vibeDescription = getVibeDescription(vibe);
   
   return `You are an expert travel planner AI. Create a detailed, personalized ${days}-day itinerary for ${destination}.
 
 **Trip Details:**
 - Destination: ${destination}
-- Dates: ${format(startDate, 'MMM dd, yyyy')} to ${format(endDate, 'MMM dd, yyyy')} (${days} days)
+- Dates: ${format(start, 'MMM dd, yyyy')} to ${format(end, 'MMM dd, yyyy')} (${days} days)
 - Budget: $${budget} USD (total for ${travelers} traveler${travelers > 1 ? 's' : ''})
 - Travelers: ${travelers} person${travelers > 1 ? 's' : ''}
 - Pace: ${pace}
@@ -56,7 +60,7 @@ ${vibeDescription}
   "days": [
     {
       "day": 1,
-      "date": "${format(startDate, 'yyyy-MM-dd')}",
+      "date": "${format(start, 'yyyy-MM-dd')}",
       "theme": "Day theme here",
       "energyLevel": "balanced",
       "activities": [
