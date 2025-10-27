@@ -37,7 +37,7 @@ git push -u origin main
 5. Vercel will auto-detect Next.js settings
 6. Add Environment Variable:
    - Key: `GOOGLE_API_KEY`
-   - Value: `AIzaSyAaWqyLbGaKm107nWkbQrFQHPLk8aeVpkU`
+   - Value: ``
 7. Click "Deploy"
 8. Wait 2-3 minutes for deployment to complete
 9. Your app will be live at: `https://tripsense-ai.vercel.app`
