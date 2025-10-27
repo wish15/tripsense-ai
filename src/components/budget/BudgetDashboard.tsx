@@ -90,47 +90,47 @@ export default function BudgetDashboard({ itinerary }: BudgetDashboardProps) {
         <div className="grid md:grid-cols-3 gap-4">
           <button
             onClick={() => setFlexView('70')}
-            className={`p-6 border-2 rounded-xl transition-all ${
+            className={`p-6 border-2 rounded-xl transition-all hover:scale-105 ${
               flexView === '70'
-                ? 'border-green-600 bg-green-50'
-                : 'border-gray-200 hover:border-green-600'
+                ? 'border-green-600 bg-green-50 shadow-lg ring-2 ring-green-200'
+                : 'border-gray-200 hover:border-green-600 hover:bg-green-50'
             }`}
           >
-            <div className="text-sm mb-1" style={{ color: '#64748b' }}>Budget Saver</div>
-            <div className="text-3xl font-bold text-green-600 mb-1">
+            <div className="text-sm font-medium mb-1" style={{ color: flexView === '70' ? '#15803d' : '#64748b' }}>Budget Saver</div>
+            <div className="text-3xl font-bold mb-1" style={{ color: flexView === '70' ? '#15803d' : '#10b981' }}>
               ${Math.round(totalCost * 0.7).toLocaleString()}
             </div>
-            <div className="text-xs" style={{ color: '#94a3b8' }}>70% of current</div>
+            <div className="text-xs font-medium" style={{ color: flexView === '70' ? '#15803d' : '#94a3b8' }}>70% of current</div>
           </button>
 
           <button
             onClick={() => setFlexView('100')}
-            className={`p-6 border-2 rounded-xl transition-all ${
+            className={`p-6 border-2 rounded-xl transition-all hover:scale-105 ${
               flexView === '100'
-                ? 'border-blue-600 bg-blue-50'
-                : 'border-gray-200 hover:border-blue-600'
+                ? 'border-blue-600 bg-blue-50 shadow-lg ring-2 ring-blue-200'
+                : 'border-gray-200 hover:border-blue-600 hover:bg-blue-50'
             }`}
           >
-            <div className="text-sm mb-1" style={{ color: '#64748b' }}>Current Plan</div>
-            <div className="text-3xl font-bold text-blue-600 mb-1">
+            <div className="text-sm font-medium mb-1" style={{ color: flexView === '100' ? '#1e40af' : '#64748b' }}>Current Plan</div>
+            <div className="text-3xl font-bold mb-1" style={{ color: flexView === '100' ? '#1e40af' : '#3b82f6' }}>
               ${totalCost.toLocaleString()}
             </div>
-            <div className="text-xs" style={{ color: '#94a3b8' }}>100% recommended</div>
+            <div className="text-xs font-medium" style={{ color: flexView === '100' ? '#1e40af' : '#94a3b8' }}>100% recommended</div>
           </button>
 
           <button
             onClick={() => setFlexView('130')}
-            className={`p-6 border-2 rounded-xl transition-all ${
+            className={`p-6 border-2 rounded-xl transition-all hover:scale-105 ${
               flexView === '130'
-                ? 'border-purple-600 bg-purple-50'
-                : 'border-gray-200 hover:border-purple-600'
+                ? 'border-purple-600 bg-purple-50 shadow-lg ring-2 ring-purple-200'
+                : 'border-gray-200 hover:border-purple-600 hover:bg-purple-50'
             }`}
           >
-            <div className="text-sm mb-1" style={{ color: '#64748b' }}>Premium</div>
-            <div className="text-3xl font-bold text-purple-600 mb-1">
+            <div className="text-sm font-medium mb-1" style={{ color: flexView === '130' ? '#7e22ce' : '#64748b' }}>Premium</div>
+            <div className="text-3xl font-bold mb-1" style={{ color: flexView === '130' ? '#7e22ce' : '#a855f7' }}>
               ${Math.round(totalCost * 1.3).toLocaleString()}
             </div>
-            <div className="text-xs" style={{ color: '#94a3b8' }}>130% upgrade</div>
+            <div className="text-xs font-medium" style={{ color: flexView === '130' ? '#7e22ce' : '#94a3b8' }}>130% upgrade</div>
           </button>
         </div>
       </div>
@@ -143,27 +143,27 @@ export default function BudgetDashboard({ itinerary }: BudgetDashboardProps) {
         </h2>
 
         <div className="grid md:grid-cols-3 gap-6 mb-6">
-          <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
-            <div className="text-sm text-blue-700 mb-1">Total Budget</div>
-            <div className="text-3xl font-bold text-blue-900">
+          <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
+            <div className="text-sm font-medium mb-1" style={{ color: '#1e40af' }}>Total Budget</div>
+            <div className="text-3xl font-bold" style={{ color: '#1e3a8a' }}>
               ${adjustedTotal.toLocaleString()}
             </div>
           </div>
-          <div className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
-            <div className="text-sm text-green-700 mb-1">Per Person</div>
-            <div className="text-3xl font-bold text-green-900">
+          <div className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200">
+            <div className="text-sm font-medium mb-1" style={{ color: '#15803d' }}>Per Person</div>
+            <div className="text-3xl font-bold" style={{ color: '#166534' }}>
               ${perPerson.toLocaleString()}
             </div>
-            <div className="text-xs text-green-700 mt-1">
+            <div className="text-xs font-medium mt-1" style={{ color: '#15803d' }}>
               {itinerary.travelers} traveler{itinerary.travelers > 1 ? 's' : ''}
             </div>
           </div>
-          <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
-            <div className="text-sm text-purple-700 mb-1">Per Day</div>
-            <div className="text-3xl font-bold text-purple-900">
+          <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border border-purple-200">
+            <div className="text-sm font-medium mb-1" style={{ color: '#7e22ce' }}>Per Day</div>
+            <div className="text-3xl font-bold" style={{ color: '#6b21a8' }}>
               ${perDay.toLocaleString()}
             </div>
-            <div className="text-xs text-purple-700 mt-1">
+            <div className="text-xs font-medium mt-1" style={{ color: '#7e22ce' }}>
               {itinerary.days.length} days
             </div>
           </div>

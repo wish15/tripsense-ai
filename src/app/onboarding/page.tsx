@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { MapPin, Calendar, DollarSign, Users, Sparkles, ArrowRight, ArrowLeft } from "lucide-react";
+import { MapPin, Calendar, DollarSign, Users, Sparkles, ArrowRight, ArrowLeft, Plane, Home, Compass, Mountain, Palmtree, Building2, UtensilsCrossed, PartyPopper } from "lucide-react";
 import { TravelPreferences, VibeProfile } from "@/types";
 
 const VIBE_QUESTIONS = [
@@ -14,9 +14,48 @@ const VIBE_QUESTIONS = [
   { id: 'nature', label: 'Nature & Outdoors', emoji: '🏞️' },
 ];
 
+const EXPERIENCE_TYPES = [
+  { id: 'adventure', label: 'Adventure', emoji: '🏔️', icon: Mountain },
+  { id: 'relaxation', label: 'Relaxation', emoji: '🏖️', icon: Palmtree },
+  { id: 'cultural', label: 'Cultural', emoji: '🏛️', icon: Building2 },
+  { id: 'foodie', label: 'Foodie', emoji: '🍜', icon: UtensilsCrossed },
+  { id: 'party', label: 'Party & Nightlife', emoji: '🎉', icon: PartyPopper },
+  { id: 'exploration', label: 'Exploration', emoji: '🧭', icon: Compass },
+];
+
+const DESTINATION_SUGGESTIONS: Record<string, { foreign: string[], local: string[] }> = {
+  adventure: {
+    foreign: ['Nepal', 'New Zealand', 'Iceland', 'Switzerland', 'Costa Rica', 'Peru'],
+    local: ['Colorado', 'Utah', 'Alaska', 'Montana', 'Oregon', 'Wyoming']
+  },
+  relaxation: {
+    foreign: ['Maldives', 'Bali', 'Santorini', 'Fiji', 'Seychelles', 'Thailand'],
+    local: ['Hawaii', 'Florida Keys', 'Sedona', 'Napa Valley', 'Charleston', 'Maui']
+  },
+  cultural: {
+    foreign: ['Japan', 'Italy', 'Egypt', 'Peru', 'India', 'Greece'],
+    local: ['New York', 'Boston', 'New Orleans', 'San Francisco', 'Philadelphia', 'Washington DC']
+  },
+  foodie: {
+    foreign: ['Italy', 'Japan', 'France', 'Thailand', 'Spain', 'Mexico'],
+    local: ['New York', 'San Francisco', 'New Orleans', 'Chicago', 'Austin', 'Portland']
+  },
+  party: {
+    foreign: ['Ibiza', 'Bangkok', 'Amsterdam', 'Berlin', 'Barcelona', 'Rio de Janeiro'],
+    local: ['Las Vegas', 'Miami', 'New Orleans', 'Austin', 'Nashville', 'Los Angeles']
+  },
+  exploration: {
+    foreign: ['Morocco', 'Vietnam', 'Turkey', 'Portugal', 'Indonesia', 'South Africa'],
+    local: ['California Coast', 'Route 66', 'Pacific Northwest', 'Great Lakes', 'Appalachia', 'Desert Southwest']
+  }
+};
+
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
+  const [experienceType, setExperienceType] = useState<string>('');
+  const [tripScope, setTripScope] = useState<'foreign' | 'local' | ''>('');
+  const [showManualInput, setShowManualInput] = useState(false);
   const [preferences, setPreferences] = useState<Partial<TravelPreferences>>({
     destination: "",
     budget: 1500,
@@ -34,7 +73,7 @@ export default function OnboardingPage() {
     },
   });
 
-  const totalSteps = 6;
+  const totalSteps = 9;
 
   const handleNext = () => {
     if (step < totalSteps) {
@@ -53,16 +92,22 @@ export default function OnboardingPage() {
   const canProceed = () => {
     switch (step) {
       case 1:
-        return preferences.destination && preferences.destination.length > 0;
+        return experienceType !== '';
       case 2:
-        return preferences.startDate && preferences.endDate;
+        return tripScope !== '';
       case 3:
-        return preferences.budgetType !== undefined;
+        return preferences.destination && preferences.destination.length > 0;
       case 4:
-        return preferences.travelers && preferences.travelers > 0;
+        return true; // Confirmation step
       case 5:
-        return true;
+        return preferences.startDate && preferences.endDate;
       case 6:
+        return preferences.budgetType !== undefined;
+      case 7:
+        return preferences.travelers && preferences.travelers > 0;
+      case 8:
+        return true;
+      case 9:
         return true;
       default:
         return false;
@@ -102,41 +147,179 @@ export default function OnboardingPage() {
 
         {/* Card Container */}
         <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12">
-          {/* Step 1: Destination */}
+          {/* Step 1: Experience Type */}
           {step === 1 && (
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-4">
-                <MapPin className="h-8 w-8 text-blue-600" />
-                <h2 className="text-3xl font-bold" style={{ color: '#0f172a' }}>Where do you want to go?</h2>
+                <Sparkles className="h-8 w-8 text-purple-600" />
+                <h2 className="text-3xl font-bold" style={{ color: '#0f172a' }}>What experience are you looking for?</h2>
               </div>
-              <p className="text-lg" style={{ color: '#334155' }}>
-                Tell us your dream destination and we'll plan the perfect trip
+              <p className="text-lg" style={{ color: '#64748b' }}>
+                Tell us what kind of trip you want, and we'll personalize everything for you
               </p>
-              <input
-                type="text"
-                placeholder="e.g., Paris, Tokyo, Bali..."
-                value={preferences.destination}
-                onChange={(e) => setPreferences({ ...preferences, destination: e.target.value })}
-                className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl text-lg focus:border-blue-600 focus:outline-none transition-colors"
-                autoFocus
-              />
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-6">
-                {['Paris', 'Tokyo', 'Bali', 'New York', 'Rome', 'Dubai'].map((city) => (
-                  <button
-                    key={city}
-                    onClick={() => setPreferences({ ...preferences, destination: city })}
-                    className="px-4 py-3 border-2 border-gray-200 rounded-xl hover:border-blue-600 hover:bg-blue-50 transition-all text-sm font-medium"
-                    style={{ color: '#0f172a' }}
-                  >
-                    {city}
-                  </button>
-                ))}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
+                {EXPERIENCE_TYPES.map((exp) => {
+                  const Icon = exp.icon;
+                  return (
+                    <button
+                      key={exp.id}
+                      onClick={() => setExperienceType(exp.id)}
+                      className={`p-6 border-2 rounded-2xl transition-all hover:scale-105 ${
+                        experienceType === exp.id
+                          ? 'border-purple-600 bg-purple-50 shadow-lg'
+                          : 'border-gray-200 hover:border-purple-600 hover:bg-purple-50'
+                      }`}
+                    >
+                      <Icon className={`h-10 w-10 mx-auto mb-3 ${experienceType === exp.id ? 'text-purple-600' : 'text-gray-400'}`} />
+                      <div className="text-3xl mb-2">{exp.emoji}</div>
+                      <div className="font-bold" style={{ color: experienceType === exp.id ? '#7c3aed' : '#0f172a' }}>
+                        {exp.label}
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
 
-          {/* Step 2: Dates */}
+          {/* Step 2: Foreign or Local */}
           {step === 2 && (
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 mb-4">
+                <Compass className="h-8 w-8 text-blue-600" />
+                <h2 className="text-3xl font-bold" style={{ color: '#0f172a' }}>Where would you like to travel?</h2>
+              </div>
+              <p className="text-lg" style={{ color: '#64748b' }}>
+                Choose your travel scope
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <button
+                  onClick={() => setTripScope('foreign')}
+                  className={`p-10 border-2 rounded-2xl transition-all hover:scale-105 ${
+                    tripScope === 'foreign'
+                      ? 'border-blue-600 bg-blue-50 shadow-lg'
+                      : 'border-gray-200 hover:border-blue-600 hover:bg-blue-50'
+                  }`}
+                >
+                  <Plane className={`h-16 w-16 mx-auto mb-4 ${tripScope === 'foreign' ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <h3 className="text-2xl font-bold mb-2" style={{ color: tripScope === 'foreign' ? '#2563eb' : '#0f172a' }}>
+                    Foreign Trip
+                  </h3>
+                  <p className="text-sm" style={{ color: '#64748b' }}>
+                    Explore international destinations
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => setTripScope('local')}
+                  className={`p-10 border-2 rounded-2xl transition-all hover:scale-105 ${
+                    tripScope === 'local'
+                      ? 'border-blue-600 bg-blue-50 shadow-lg'
+                      : 'border-gray-200 hover:border-blue-600 hover:bg-blue-50'
+                  }`}
+                >
+                  <Home className={`h-16 w-16 mx-auto mb-4 ${tripScope === 'local' ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <h3 className="text-2xl font-bold mb-2" style={{ color: tripScope === 'local' ? '#2563eb' : '#0f172a' }}>
+                    Local Trip
+                  </h3>
+                  <p className="text-sm" style={{ color: '#64748b' }}>
+                    Discover amazing places nearby
+                  </p>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Destination Suggestions */}
+          {step === 3 && (
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 mb-4">
+                <MapPin className="h-8 w-8 text-blue-600" />
+                <h2 className="text-3xl font-bold" style={{ color: '#0f172a' }}>
+                  {showManualInput ? 'Enter your destination' : 'Pick your destination'}
+                </h2>
+              </div>
+              <p className="text-lg" style={{ color: '#64748b' }}>
+                {showManualInput 
+                  ? 'Type in your dream destination'
+                  : `Based on your ${experienceType} preference, here are some ${tripScope} destinations`
+                }
+              </p>
+
+              {showManualInput ? (
+                <div className="space-y-4">
+                  <input
+                    type="text"
+                    placeholder="e.g., Paris, Tokyo, Bali..."
+                    value={preferences.destination}
+                    onChange={(e) => setPreferences({ ...preferences, destination: e.target.value })}
+                    className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl text-lg focus:border-blue-600 focus:outline-none transition-colors"
+                    style={{ color: '#0f172a' }}
+                    autoFocus
+                  />
+                  <button
+                    onClick={() => setShowManualInput(false)}
+                    className="text-sm text-blue-600 hover:underline"
+                  >
+                    ← Back to suggestions
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-6">
+                    {tripScope && experienceType && DESTINATION_SUGGESTIONS[experienceType]?.[tripScope]?.map((destination) => (
+                      <button
+                        key={destination}
+                        onClick={() => setPreferences({ ...preferences, destination })}
+                        className={`px-4 py-4 border-2 rounded-xl transition-all hover:scale-105 text-sm font-medium ${
+                          preferences.destination === destination
+                            ? 'border-blue-600 bg-blue-50 shadow-md'
+                            : 'border-gray-200 hover:border-blue-600 hover:bg-blue-50'
+                        }`}
+                        style={{ color: preferences.destination === destination ? '#2563eb' : '#0f172a' }}
+                      >
+                        {destination}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => setShowManualInput(true)}
+                    className="w-full mt-4 px-6 py-3 border-2 border-dashed border-gray-300 rounded-xl hover:border-blue-600 hover:bg-blue-50 transition-all text-sm font-medium"
+                    style={{ color: '#64748b' }}
+                  >
+                    + Enter a different destination
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Step 4: Confirmation */}
+          {step === 4 && (
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 mb-4">
+                <Sparkles className="h-8 w-8 text-green-600" />
+                <h2 className="text-3xl font-bold" style={{ color: '#0f172a' }}>Perfect choice!</h2>
+              </div>
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 border-2 border-blue-100">
+                <div className="text-center space-y-4">
+                  <div className="text-5xl mb-4">✈️</div>
+                  <h3 className="text-2xl font-bold" style={{ color: '#0f172a' }}>
+                    {preferences.destination}
+                  </h3>
+                  <p className="text-lg" style={{ color: '#64748b' }}>
+                    {EXPERIENCE_TYPES.find(e => e.id === experienceType)?.label} {tripScope === 'foreign' ? 'International' : 'Domestic'} Trip
+                  </p>
+                </div>
+              </div>
+              <p className="text-center text-lg" style={{ color: '#64748b' }}>
+                Let's continue to create your perfect itinerary! 🎉
+              </p>
+            </div>
+          )}
+
+          {/* Step 5: Dates */}
+          {step === 5 && (
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-4">
                 <Calendar className="h-8 w-8 text-blue-600" />
@@ -218,8 +401,8 @@ export default function OnboardingPage() {
             </div>
           )}
 
-          {/* Step 3: Budget */}
-          {step === 3 && (
+          {/* Step 6: Budget */}
+          {step === 6 && (
             <div className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <button
@@ -269,8 +452,8 @@ export default function OnboardingPage() {
             </div>
           )}
 
-          {/* Step 4: Travelers */}
-          {step === 4 && (
+          {/* Step 7: Travelers */}
+          {step === 7 && (
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-4">
                 <Users className="h-8 w-8 text-purple-600" />
@@ -334,8 +517,8 @@ export default function OnboardingPage() {
             </div>
           )}
 
-          {/* Step 5: Vibe Profile */}
-          {step === 5 && (
+          {/* Step 8: Vibe Profile */}
+          {step === 8 && (
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-4">
                 <Sparkles className="h-8 w-8 text-purple-600" />
@@ -370,8 +553,8 @@ export default function OnboardingPage() {
             </div>
           )}
 
-          {/* Step 6: Custom Vibe Description */}
-          {step === 6 && (
+          {/* Step 9: Custom Vibe Description */}
+          {step === 9 && (
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-4">
                 <Sparkles className="h-8 w-8 text-purple-600" />
