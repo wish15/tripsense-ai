@@ -2,7 +2,7 @@ import { TravelPreferences, VibeProfile } from '@/types';
 import { format } from 'date-fns';
 
 export function generateItineraryPrompt(preferences: TravelPreferences): string {
-  const { destination, startDate, endDate, budget, travelers, vibe, pace } = preferences;
+  const { destination, startDate, endDate, budget, travelers, vibe, pace, customVibe, arrivalTime, departureTime } = preferences;
   
   // Convert string dates to Date objects if needed
   const start = typeof startDate === 'string' ? new Date(startDate) : startDate;
@@ -15,20 +15,21 @@ export function generateItineraryPrompt(preferences: TravelPreferences): string 
 
 **Trip Details:**
 - Destination: ${destination}
-- Dates: ${format(start, 'MMM dd, yyyy')} to ${format(end, 'MMM dd, yyyy')} (${days} days)
+- Dates: ${format(start, 'MMM dd, yyyy')} to ${format(end, 'MMM dd, yyyy')} (${days} days)${arrivalTime ? `\n- Arrival Time: ${arrivalTime}` : ''}${departureTime ? `\n- Departure Time: ${departureTime}` : ''}
 - Budget: $${budget} USD (total for ${travelers} traveler${travelers > 1 ? 's' : ''})
 - Travelers: ${travelers} person${travelers > 1 ? 's' : ''}
 - Pace: ${pace}
 
 **Traveler Personality (Vibe Profile):**
 ${vibeDescription}
+${customVibe ? `\n**In Their Own Words:**\n"${customVibe}"\n\nIMPORTANT: Pay special attention to this custom description! This is how the traveler describes their ideal trip. Make sure the itinerary strongly reflects these specific preferences and keywords.` : ''}
 
 **Requirements:**
-1. Create a day-by-day itinerary with 3-5 activities per day
+1. Create a day-by-day itinerary with 3-5 activities per day${arrivalTime ? ` (start Day 1 activities after ${arrivalTime})` : ''}${departureTime ? ` (end last day activities before ${departureTime})` : ''}
 2. Balance energy levels throughout the trip (don't exhaust travelers!)
 3. Include specific locations with addresses
 4. Provide realistic time estimates and costs for each activity
-5. Match activities to the traveler's vibe profile
+5. Match activities to the traveler's vibe profile${customVibe ? ' AND their custom description' : ''}
 6. Include meal recommendations (breakfast, lunch, dinner)
 7. Add transportation between activities
 8. Stay within the budget

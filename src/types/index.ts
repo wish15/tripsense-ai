@@ -18,11 +18,15 @@ export interface TravelPreferences {
   destination: string;
   startDate: Date;
   endDate: Date;
+  arrivalTime?: string;
+  departureTime?: string;
   budget: number;
+  budgetType?: 'budget-friendly' | 'mid-range' | 'luxury';
   currency: string;
   travelers: number;
   travelerTypes: ('adult' | 'child' | 'senior')[];
   vibe: VibeProfile;
+  customVibe?: string;
   pace: 'slow' | 'moderate' | 'fast';
   accommodation?: string;
 }

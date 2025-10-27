@@ -20,6 +20,7 @@ export default function OnboardingPage() {
   const [preferences, setPreferences] = useState<Partial<TravelPreferences>>({
     destination: "",
     budget: 1500,
+    budgetType: undefined,
     travelers: 2,
     currency: "USD",
     pace: "moderate",
@@ -33,7 +34,7 @@ export default function OnboardingPage() {
     },
   });
 
-  const totalSteps = 5;
+  const totalSteps = 6;
 
   const handleNext = () => {
     if (step < totalSteps) {
@@ -56,10 +57,12 @@ export default function OnboardingPage() {
       case 2:
         return preferences.startDate && preferences.endDate;
       case 3:
-        return preferences.budget && preferences.budget > 0;
+        return preferences.budgetType !== undefined;
       case 4:
         return preferences.travelers && preferences.travelers > 0;
       case 5:
+        return true;
+      case 6:
         return true;
       default:
         return false;
@@ -142,6 +145,8 @@ export default function OnboardingPage() {
               <p className="text-lg" style={{ color: '#334155' }}>
                 Select your travel dates
               </p>
+              
+              {/* Date Inputs */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-2" style={{ color: '#1e293b' }}>
@@ -149,9 +154,11 @@ export default function OnboardingPage() {
                   </label>
                   <input
                     type="date"
+                    min={new Date().toISOString().split('T')[0]}
                     value={preferences.startDate ? new Date(preferences.startDate).toISOString().split('T')[0] : ''}
                     onChange={(e) => setPreferences({ ...preferences, startDate: new Date(e.target.value) })}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-600 focus:outline-none"
+                    style={{ color: '#0f172a' }}
                   />
                 </div>
                 <div>
@@ -160,16 +167,51 @@ export default function OnboardingPage() {
                   </label>
                   <input
                     type="date"
+                    min={preferences.startDate ? new Date(new Date(preferences.startDate).getTime() + 86400000).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}
                     value={preferences.endDate ? new Date(preferences.endDate).toISOString().split('T')[0] : ''}
                     onChange={(e) => setPreferences({ ...preferences, endDate: new Date(e.target.value) })}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-600 focus:outline-none"
+                    style={{ color: '#0f172a' }}
                   />
                 </div>
               </div>
+
+              {/* Time Inputs */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: '#1e293b' }}>
+                    Arrival Time
+                  </label>
+                  <input
+                    type="time"
+                    value={preferences.arrivalTime || ''}
+                    onChange={(e) => setPreferences({ ...preferences, arrivalTime: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-600 focus:outline-none"
+                    style={{ color: '#0f172a' }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: '#1e293b' }}>
+                    Departure Time
+                  </label>
+                  <input
+                    type="time"
+                    value={preferences.departureTime || ''}
+                    onChange={(e) => setPreferences({ ...preferences, departureTime: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-600 focus:outline-none"
+                    style={{ color: '#0f172a' }}
+                  />
+                </div>
+              </div>
+
+              {/* Trip Duration Display */}
               {preferences.startDate && preferences.endDate && (
-                <div className="bg-blue-50 rounded-xl p-4 text-center">
-                  <p className="text-blue-800 font-medium">
-                    {Math.ceil((new Date(preferences.endDate).getTime() - new Date(preferences.startDate).getTime()) / (1000 * 60 * 60 * 24)) + 1} days trip
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 text-center border-2 border-blue-100">
+                  <div className="text-4xl font-bold text-blue-600 mb-2">
+                    {Math.ceil((new Date(preferences.endDate).getTime() - new Date(preferences.startDate).getTime()) / (1000 * 60 * 60 * 24)) + 1}
+                  </div>
+                  <p className="text-sm font-medium" style={{ color: '#475569' }}>
+                    Days of Adventure
                   </p>
                 </div>
               )}
@@ -178,100 +220,51 @@ export default function OnboardingPage() {
 
           {/* Step 3: Budget */}
           {step === 3 && (
-            <div className="space-y-6">
-              <div className="flex items-center gap-3 mb-4">
-                <DollarSign className="h-8 w-8 text-green-600" />
-                <h2 className="text-3xl font-bold" style={{ color: '#0f172a' }}>What's your budget?</h2>
-              </div>
-              <p className="text-lg" style={{ color: '#334155' }}>
-                Total budget for {preferences.travelers} traveler(s)
-              </p>
-              
-              {/* Currency Selection */}
-              <div>
-                <label className="block text-sm font-medium mb-3" style={{ color: '#1e293b' }}>
-                  Currency
-                </label>
-                <select
-                  value={preferences.currency}
-                  onChange={(e) => setPreferences({ ...preferences, currency: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-600 focus:outline-none text-lg font-medium"
-                  style={{ color: '#0f172a', backgroundColor: '#ffffff' }}
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <button
+                  onClick={() => setPreferences({ ...preferences, budget: 1500, budgetType: 'budget-friendly' })}
+                  className={`p-10 rounded-3xl border-2 transition-all hover:scale-105 ${
+                    preferences.budgetType === 'budget-friendly'
+                      ? 'bg-blue-50 border-blue-500 shadow-lg'
+                      : 'bg-white border-gray-200 hover:bg-gray-50'
+                  }`}
                 >
-                  <option value="USD">$ USD - US Dollar</option>
-                  <option value="EUR">€ EUR - Euro</option>
-                  <option value="GBP">£ GBP - British Pound</option>
-                  <option value="JPY">¥ JPY - Japanese Yen</option>
-                  <option value="INR">₹ INR - Indian Rupee</option>
-                  <option value="AUD">$ AUD - Australian Dollar</option>
-                  <option value="CAD">$ CAD - Canadian Dollar</option>
-                  <option value="SGD">$ SGD - Singapore Dollar</option>
-                </select>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="text-center">
-                  <div className="text-5xl font-bold text-blue-600 mb-2">
-                    {preferences.currency === 'USD' && '$'}
-                    {preferences.currency === 'EUR' && '€'}
-                    {preferences.currency === 'GBP' && '£'}
-                    {preferences.currency === 'JPY' && '¥'}
-                    {preferences.currency === 'INR' && '₹'}
-                    {preferences.currency === 'AUD' && '$'}
-                    {preferences.currency === 'CAD' && '$'}
-                    {preferences.currency === 'SGD' && '$'}
-                    {preferences.budget?.toLocaleString()}
-                  </div>
-                  <p style={{ color: '#64748b' }}>
-                    ~{preferences.currency === 'USD' && '$'}
-                    {preferences.currency === 'EUR' && '€'}
-                    {preferences.currency === 'GBP' && '£'}
-                    {preferences.currency === 'JPY' && '¥'}
-                    {preferences.currency === 'INR' && '₹'}
-                    {preferences.currency === 'AUD' && '$'}
-                    {preferences.currency === 'CAD' && '$'}
-                    {preferences.currency === 'SGD' && '$'}
-                    {Math.round((preferences.budget || 0) / (preferences.travelers || 1))} per person
+                  <p className="text-base font-medium leading-relaxed" style={{ color: preferences.budgetType === 'budget-friendly' ? '#2563eb' : '#94a3b8' }}>
+                    Smart spending,<br/>
+                    big adventures
                   </p>
-                </div>
-                <div className="relative">
-                  <input
-                    type="range"
-                    min="500"
-                    max="10000"
-                    step="100"
-                    value={preferences.budget}
-                    onChange={(e) => setPreferences({ ...preferences, budget: parseInt(e.target.value) })}
-                    className="w-full"
-                    style={{
-                      background: `linear-gradient(to right, #2563eb 0%, #2563eb ${((preferences.budget || 500) - 500) / (10000 - 500) * 100}%, #e2e8f0 ${((preferences.budget || 500) - 500) / (10000 - 500) * 100}%, #e2e8f0 100%)`
-                    }}
-                  />
-                </div>
-                <div className="flex justify-between text-sm" style={{ color: '#64748b' }}>
-                  <span>{preferences.currency === 'USD' ? '$' : preferences.currency === 'EUR' ? '€' : preferences.currency === 'GBP' ? '£' : preferences.currency === 'JPY' ? '¥' : preferences.currency === 'INR' ? '₹' : '$'}500</span>
-                  <span>{preferences.currency === 'USD' ? '$' : preferences.currency === 'EUR' ? '€' : preferences.currency === 'GBP' ? '£' : preferences.currency === 'JPY' ? '¥' : preferences.currency === 'INR' ? '₹' : '$'}10,000+</span>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
-                {[1000, 2000, 3000, 5000].map((amount) => (
-                  <button
-                    key={amount}
-                    onClick={() => setPreferences({ ...preferences, budget: amount })}
-                    className="px-4 py-3 border-2 border-gray-200 rounded-xl hover:border-green-600 hover:bg-green-50 transition-all text-sm font-medium"
-                    style={{ color: '#0f172a' }}
-                  >
-                    {preferences.currency === 'USD' && '$'}
-                    {preferences.currency === 'EUR' && '€'}
-                    {preferences.currency === 'GBP' && '£'}
-                    {preferences.currency === 'JPY' && '¥'}
-                    {preferences.currency === 'INR' && '₹'}
-                    {preferences.currency === 'AUD' && '$'}
-                    {preferences.currency === 'CAD' && '$'}
-                    {preferences.currency === 'SGD' && '$'}
-                    {amount.toLocaleString()}
-                  </button>
-                ))}
+                </button>
+
+                <button
+                  onClick={() => setPreferences({ ...preferences, budget: 3500, budgetType: 'mid-range' })}
+                  className={`p-10 rounded-3xl border-2 transition-all hover:scale-105 ${
+                    preferences.budgetType === 'mid-range'
+                      ? 'bg-blue-50 border-blue-500 shadow-lg'
+                      : 'bg-white border-gray-200 hover:bg-gray-50'
+                  }`}
+                >
+                  <p className="text-base font-medium leading-relaxed" style={{ color: preferences.budgetType === 'mid-range' ? '#2563eb' : '#94a3b8' }}>
+                    Balanced<br/>
+                    comfort<br/>
+                    & value
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => setPreferences({ ...preferences, budget: 7000, budgetType: 'luxury' })}
+                  className={`p-10 rounded-3xl border-2 transition-all hover:scale-105 ${
+                    preferences.budgetType === 'luxury'
+                      ? 'bg-blue-50 border-blue-500 shadow-lg'
+                      : 'bg-white border-gray-200 hover:bg-gray-50'
+                  }`}
+                >
+                  <p className="text-base font-medium leading-relaxed" style={{ color: preferences.budgetType === 'luxury' ? '#2563eb' : '#94a3b8' }}>
+                    Premium<br/>
+                    experiences<br/>
+                    all the way
+                  </p>
+                </button>
               </div>
             </div>
           )}
@@ -283,7 +276,7 @@ export default function OnboardingPage() {
                 <Users className="h-8 w-8 text-purple-600" />
                 <h2 className="text-3xl font-bold" style={{ color: '#0f172a' }}>Who's traveling?</h2>
               </div>
-              <p className="text-lg" style={{ color: '#334155' }}>
+              <p className="text-lg" style={{ color: '#64748b' }}>
                 Number of travelers and your travel pace
               </p>
               <div className="space-y-6">
@@ -291,19 +284,21 @@ export default function OnboardingPage() {
                   <label className="block text-sm font-medium mb-3" style={{ color: '#1e293b' }}>
                     Number of Travelers
                   </label>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-center gap-4">
                     <button
                       onClick={() => setPreferences({ ...preferences, travelers: Math.max(1, (preferences.travelers || 1) - 1) })}
-                      className="w-12 h-12 rounded-full border-2 border-gray-300 flex items-center justify-center text-2xl hover:border-purple-600 hover:bg-purple-50 transition-all"
+                      className="w-14 h-14 rounded-full border-2 border-gray-300 flex items-center justify-center text-2xl font-bold hover:border-purple-600 hover:bg-purple-50 transition-all"
+                      style={{ color: '#0f172a' }}
                     >
-                      -
+                      −
                     </button>
-                    <div className="text-4xl font-bold text-purple-600 w-20 text-center">
+                    <div className="text-5xl font-bold text-purple-600 w-24 text-center">
                       {preferences.travelers}
                     </div>
                     <button
                       onClick={() => setPreferences({ ...preferences, travelers: (preferences.travelers || 1) + 1 })}
-                      className="w-12 h-12 rounded-full border-2 border-gray-300 flex items-center justify-center text-2xl hover:border-purple-600 hover:bg-purple-50 transition-all"
+                      className="w-14 h-14 rounded-full border-2 border-gray-300 flex items-center justify-center text-2xl font-bold hover:border-purple-600 hover:bg-purple-50 transition-all"
+                      style={{ color: '#0f172a' }}
                     >
                       +
                     </button>
@@ -323,14 +318,14 @@ export default function OnboardingPage() {
                       <button
                         key={pace.value}
                         onClick={() => setPreferences({ ...preferences, pace: pace.value as any })}
-                        className={`p-4 border-2 rounded-xl transition-all text-center ${
+                        className={`p-4 border-2 rounded-xl transition-all text-center hover:scale-105 ${
                           preferences.pace === pace.value
-                            ? 'border-purple-600 bg-purple-50'
+                            ? 'border-purple-600 bg-purple-50 shadow-lg'
                             : 'border-gray-200 hover:border-purple-600 hover:bg-purple-50'
                         }`}
                       >
-                        <div className="font-semibold" style={{ color: '#0f172a' }}>{pace.label}</div>
-                        <div className="text-sm mt-1" style={{ color: '#334155' }}>{pace.desc}</div>
+                        <div className="font-bold text-base" style={{ color: preferences.pace === pace.value ? '#7c3aed' : '#0f172a' }}>{pace.label}</div>
+                        <div className="text-sm mt-1" style={{ color: preferences.pace === pace.value ? '#6d28d9' : '#64748b' }}>{pace.desc}</div>
                       </button>
                     ))}
                   </div>
@@ -372,6 +367,30 @@ export default function OnboardingPage() {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Step 6: Custom Vibe Description */}
+          {step === 6 && (
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 mb-4">
+                <Sparkles className="h-8 w-8 text-purple-600" />
+                <h2 className="text-3xl font-bold" style={{ color: '#0f172a' }}>Describe your ideal trip vibe in a few words.</h2>
+              </div>
+              <textarea
+                placeholder='e.g., "cozy cafes and long walks" or "epic hikes and bonfires"'
+                value={preferences.customVibe || ''}
+                onChange={(e) => setPreferences({ ...preferences, customVibe: e.target.value })}
+                className="w-full px-6 py-4 border-2 border-gray-300 rounded-2xl text-lg focus:border-purple-600 focus:outline-none transition-colors min-h-[120px] resize-none placeholder:text-gray-400"
+                style={{ 
+                  color: '#0f172a',
+                  backgroundColor: '#ffffff'
+                }}
+                autoFocus
+              />
+              <p className="text-sm" style={{ color: '#64748b' }}>
+                This helps our AI create a truly personalized experience just for you ✨
+              </p>
             </div>
           )}
 
